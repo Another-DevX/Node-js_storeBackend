@@ -9,9 +9,11 @@ const {
   getProductScheme,
 } = require('../schemas/products');
 
+
 const router = express.Router();
 
 const service = new ProductsService();
+
 
 router.get('/', async (req, res) => {
   try {
