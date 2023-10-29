@@ -2,6 +2,13 @@ const express = require('express');
 
 const ProductsService = require('../services/products');
 
+const validatorHandler = require('../middleware/validatorHandler');
+const {
+  createProductsScheme,
+  updateProductsScheme,
+  getProductScheme,
+} = require('../schemas/products');
+
 const router = express.Router();
 
 const service = new ProductsService();
@@ -18,28 +25,32 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const product = await service.findOne(id);
-    res.status(200).json(product);
-  } catch (e) {
-    next(e);
-    // if (
-    //   e.message === "Cannot read properties of undefined (reading 'length')"
-    // ) {
-    //   return res.status(404).json({
-    //     message: 'Product not found',
-    //   });
-    // }
-    // res.status(404).json({
-    //   message: e.message,
-    // });
-    // console.error(e.message);
-  }
-});
+router.get(
+  '/:id',
+  validatorHandler(getProductScheme, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const product = await service.findOne(id);
+      res.status(200).json(product);
+    } catch (e) {
+      next(e);
+      // if (
+      //   e.message === "Cannot read properties of undefined (reading 'length')"
+      // ) {
+      //   return res.status(404).json({
+      //     message: 'Product not found',
+      //   });
+      // }
+      // res.status(404).json({
+      //   message: e.message,
+      // });
+      // console.error(e.message);
+    }
+  },
+);
 
-router.post('/', async (req, res) => {
+router.post('/', validatorHandler(createProductsScheme, 'body'),async (req, res, next) => {
   try {
     const body = req.body;
     const newProduct = await service.create(body);
@@ -48,14 +59,11 @@ router.post('/', async (req, res) => {
       data: newProduct,
     });
   } catch (e) {
-    res.status(500).json({
-      message: e.message,
-    });
-    console.error(e.message);
+    next(e);
   }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validatorHandler(getProductScheme, 'params'),  validatorHandler(updateProductsScheme, 'body'),async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
