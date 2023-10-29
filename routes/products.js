@@ -18,23 +18,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const product = await service.findOne(id);
     res.status(200).json(product);
   } catch (e) {
-    if (
-      e.message === "Cannot read properties of undefined (reading 'length')"
-    ) {
-      return res.status(404).json({
-        message: 'Product not found',
-      });
-    }
-    res.status(404).json({
-      message: e.message,
-    });
-    console.error(e.message);
+    next(e);
+    // if (
+    //   e.message === "Cannot read properties of undefined (reading 'length')"
+    // ) {
+    //   return res.status(404).json({
+    //     message: 'Product not found',
+    //   });
+    // }
+    // res.status(404).json({
+    //   message: e.message,
+    // });
+    // console.error(e.message);
   }
 });
 
