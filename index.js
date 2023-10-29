@@ -8,7 +8,7 @@ const {
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const whiteList = ['https://localhost:8080', 'https://localhost:3000'];
 const options = {
