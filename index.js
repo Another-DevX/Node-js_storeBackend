@@ -4,6 +4,7 @@ const {
   logErrors,
   errorHandler,
   boomErrorHandler,
+  ormErrorHandler,
 } = require('./middleware/error.handler');
 const cors = require('cors');
 
@@ -29,6 +30,7 @@ routerApp(app);
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
+app.use(ormErrorHandler)
 
 app.listen(port, () => {
   console.info(`Example app listening at http://localhost:${port}`);
